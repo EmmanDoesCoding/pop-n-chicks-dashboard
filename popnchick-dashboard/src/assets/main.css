@@ -1,0 +1,26 @@
+:root {
+  --color-bg: #121212;         /* main background - almost black */
+  --color-surface: #1e1e1e;    /* cards, panels sit on top of bg */
+  --color-surface-2: #2a2a2a;  /* slightly lighter surface, for hover states */
+  --color-primary: #e63946;    /* your red accent */
+  --color-primary-hover: #ff4d5e;
+  --color-text: #f1f1f1;       /* main text, off-white for less eye strain */
+  --color-text-muted: #a0a0a0; /* secondary text, labels */
+  --color-border: #333333;
+
+  --radius: 10px;
+  --transition: 0.2s ease;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'Segoe UI', Arial, sans-serif;
+  min-height: 100vh;
+}
