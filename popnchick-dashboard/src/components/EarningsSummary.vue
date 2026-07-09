@@ -1,7 +1,13 @@
 <script setup>
+import { computed } from 'vue'
 import { useOrdersStore } from '../stores/orders'
+import { useExpensesStore } from '../stores/expenses'
 
 const ordersStore = useOrdersStore()
+const expensesStore = useExpensesStore()
+
+const netDaily = computed(() => ordersStore.dailyEarnings - expensesStore.dailyExpenses)
+const netMonthly = computed(() => ordersStore.monthlyEarnings - expensesStore.monthlyExpenses)
 </script>
 
 <template>
@@ -16,6 +22,26 @@ const ordersStore = useOrdersStore()
       <span class="amount">₱{{ ordersStore.monthlyEarnings }}</span>
     </div>
 
+    <div class="earnings-card expense-card">
+      <span class="label">Today's Expenses</span>
+      <span class="amount">− ₱{{ expensesStore.dailyExpenses }}</span>
+    </div>
+
+    <div class="earnings-card expense-card">
+      <span class="label">This Month's Expenses</span>
+      <span class="amount">− ₱{{ expensesStore.monthlyExpenses }}</span>
+    </div>
+
+    <div class="earnings-card net-card">
+      <span class="label">Today's Net</span>
+      <span class="amount">₱{{ netDaily }}</span>
+    </div>
+
+    <div class="earnings-card net-card">
+      <span class="label">This Month's Net</span>
+      <span class="amount">₱{{ netMonthly }}</span>
+    </div>
+
     <div class="earnings-card">
       <span class="label">Total Orders</span>
       <span class="amount">{{ ordersStore.totalOrders }}</span>
@@ -24,6 +50,19 @@ const ordersStore = useOrdersStore()
 </template>
 
 <style scoped>
+
+.expense-card {
+  border-left-color: var(--color-text-muted);
+}
+
+.net-card {
+  border-left-color: #4ade80;
+}
+
+.net-card .amount {
+  color: #4ade80;
+}
+
 .earnings-summary {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));

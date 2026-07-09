@@ -1,13 +1,26 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase } from '../lib/supabase'
+import { useOrdersStore } from '../stores/orders'
+import { useExpensesStore } from '../stores/expenses'
 import AddOrderForm from '../components/AddOrderForm.vue'
+import AddExpenseForm from '../components/AddExpenseForm.vue'
 import OrderList from '../components/OrderList.vue'
 import EarningsSummary from '../components/EarningsSummary.vue'
+import StatisticsBoard from '../components/StatisticsBoard.vue'
 
 const router = useRouter()
+const ordersStore = useOrdersStore()
+const expensesStore = useExpensesStore()
 const showAddOrder = ref(false)
+const showAddExpense = ref(false)
+const showStats = ref(false)
+
+onMounted(() => {
+  ordersStore.fetchOrders()
+  expensesStore.fetchExpenses()
+})
 
 async function handleLogout() {
   await supabase.auth.signOut()
@@ -17,6 +30,10 @@ async function handleLogout() {
 function handleOrderAdded() {
   showAddOrder.value = false
 }
+
+function handleExpenseAdded() {
+  showAddExpense.value = false
+}
 </script>
 
 <template>
@@ -25,11 +42,12 @@ function handleOrderAdded() {
       <h1>Dashboard</h1>
       <div class="header-actions">
         <button class="primary-btn" @click="showAddOrder = true">+ Add Order</button>
+        <button @click="showAddExpense = true">+ Add Expense</button>
+        <button @click="showStats = true">📊 Statistics</button>
         <button @click="handleLogout">Log Out</button>
       </div>
     </header>
 
-    <EarningsSummary />
     <OrderList />
 
     <Transition name="fade">
@@ -40,10 +58,37 @@ function handleOrderAdded() {
         </div>
       </div>
     </Transition>
+
+    <Transition name="fade">
+      <div v-if="showAddExpense" class="modal-overlay" @click.self="showAddExpense = false">
+        <div class="modal-content">
+          <button class="close-btn" @click="showAddExpense = false">✕</button>
+          <AddExpenseForm @expense-added="handleExpenseAdded" />
+        </div>
+      </div>
+    </Transition>
+
+    <Transition name="fade">
+      <div v-if="showStats" class="modal-overlay" @click.self="showStats = false">
+        <div class="modal-content stats-modal">
+          <button class="close-btn" @click="showStats = false">✕</button>
+          <EarningsSummary />
+          <StatisticsBoard />
+        </div>
+      </div>
+    </Transition>
   </div>
 </template>
 
 <style scoped>
+.stats-modal {
+  max-width: 700px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+}
+
 .dashboard {
   padding: 1.5rem;
   max-width: 900px;
@@ -148,5 +193,58 @@ button:active {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+@media (max-width: 640px) {
+  .dashboard {
+    padding: 1rem;
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .header-actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+  }
+
+  .header-actions button {
+    padding: 0.6rem 0.5rem;
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+
+  .header-actions .primary-btn {
+    grid-column: span 3;
+  }
+
+  .modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .modal-content {
+    max-width: 100%;
+    max-height: 85vh;
+    border-radius: var(--radius) var(--radius) 0 0;
+    animation: slideUp 0.25s ease;
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  .close-btn {
+    top: 0.75rem;
+    right: 0.75rem;
+  }
 }
 </style>

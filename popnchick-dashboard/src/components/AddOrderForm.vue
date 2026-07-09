@@ -112,17 +112,19 @@ function handleSubmit() {
 
 <label>Menu</label>
 
-<div class="category-tabs">
-  <button
-    v-for="category in menu"
-    :key="category.category"
-    type="button"
-    class="tab-btn"
-    :class="{ active: activeCategory === category.category }"
-    @click="activeCategory = category.category"
-  >
-    {{ category.category }}
-  </button>
+<div class="category-tabs-wrapper">
+  <div class="category-tabs">
+    <button
+      v-for="category in menu"
+      :key="category.category"
+      type="button"
+      class="tab-btn"
+      :class="{ active: activeCategory === category.category }"
+      @click="activeCategory = category.category"
+    >
+      {{ category.category }}
+    </button>
+  </div>
 </div>
 
 <div class="item-grid">
@@ -459,5 +461,29 @@ button[type='submit']:hover {
 
 button[type='submit']:active {
   transform: scale(0.97);
+}
+
+.category-tabs-wrapper {
+  position: relative;
+  margin-bottom: 0.75rem;
+}
+
+.category-tabs-wrapper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 24px;
+  background: linear-gradient(to right, transparent, var(--color-surface));
+  pointer-events: none;
+}
+
+.category-tabs {
+  display: flex;
+  gap: 0.4rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+  margin-bottom: 0;
 }
 </style>

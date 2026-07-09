@@ -17,8 +17,8 @@ function formatTime(date) {
     <TransitionGroup v-else name="list" tag="ul">
       <li v-for="order in ordersStore.orders" :key="order.id" :class="{ completed: order.completed }">
         <div class="order-top">
-          <span class="customer">{{ order.customerName }}</span>
-          <span class="time">{{ formatTime(order.createdAt) }}</span>
+          <span class="customer">{{ order.customer_name }}</span>
+          <span class="time">{{ formatTime( order.created_at) }}</span>
         </div>
 
         <ul class="items">
@@ -31,7 +31,7 @@ function formatTime(date) {
         <div class="order-footer">
           <div class="money-summary">
             <span><strong>₱{{ order.total }}</strong> total</span>
-            <span>₱{{ order.amountPaid }} paid</span>
+            <span>₱{{ order.amount_paid }} paid</span>
             <span>₱{{ order.change }} change</span>
           </div>
 
