@@ -25,26 +25,27 @@ export const useOrdersStore = defineStore('orders', () => {
   }
 
   async function addOrder(order) {
-    const { data, error } = await supabase
-      .from('orders')
-      .insert({
-        customer_name: order.customerName,
-        items: order.items,
-        total: order.total,
-        amount_paid: order.amountPaid,
-        change: order.change,
-        completed: false,
-      })
-      .select()
-      .single()
+  const { data, error } = await supabase
+    .from('orders')
+    .insert({
+      customer_name: order.customerName,
+      items: order.items,
+      total: order.total,
+      amount_paid: order.amountPaid,
+      change: order.change,
+      completed: false,
+      created_at: new Date(order.orderDate).toISOString(),
+    })
+    .select()
+    .single()
 
-    if (error) {
-      console.error('Error adding order:', error.message)
-      return
-    }
-
-    orders.value.unshift(data)
+  if (error) {
+    console.error('Error adding order:', error.message)
+    return
   }
+
+  orders.value.unshift(data)
+}
 
   async function toggleComplete(id) {
     const order = orders.value.find((o) => o.id === id)
@@ -138,6 +139,17 @@ const bestSellingItems = computed(() => {
     return days
   })
 
+  function getOrdersForDate(dateString) {
+    return orders.value.filter((order) => {
+      const orderDate = new Date(order.created_at)
+      const localDateString = `${orderDate.getFullYear()}-${String(orderDate.getMonth() + 1).padStart(2, '0')}-${String(orderDate.getDate()).padStart(2, '0')}`
+      return localDateString === dateString
+    })
+  }
+
+  function getEarningsForDate(dateString) {
+    return getOrdersForDate(dateString).reduce((sum, order) => sum + order.total, 0)
+  }
 
   return {
     orders,
@@ -150,5 +162,7 @@ const bestSellingItems = computed(() => {
     monthlyEarnings,
     bestSellingItems,
     last7DaysEarnings,
+    getOrdersForDate,
+    getEarningsForDate,
   }
 })

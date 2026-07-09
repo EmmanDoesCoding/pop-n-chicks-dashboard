@@ -12,6 +12,7 @@ const activeCategory = ref(menu[0].category)
 const selectedItem = ref(null)
 const quantity = ref(1)
 const amountPaid = ref(null)
+const orderDate = ref(todayDateTimeString())
 
 const cart = ref([])
 
@@ -29,6 +30,12 @@ function selectItem(item) {
   selectedItem.value = item
   quantity.value = 1
   itemError.value = ''
+}
+
+function todayDateTimeString() {
+  const now = new Date()
+  const pad = (n) => String(n).padStart(2, '0')
+  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`
 }
 
 function addToCart() {
@@ -92,6 +99,7 @@ function handleSubmit() {
     total: total.value,
     amountPaid: amountPaid.value,
     change: change.value,
+    orderDate: orderDate.value,
   })
 
   emit('order-added')
@@ -99,6 +107,7 @@ function handleSubmit() {
   customerName.value = ''
   cart.value = []
   amountPaid.value = null
+  orderDate.value = todayDateTimeString()
 }
 </script>
 
@@ -109,6 +118,9 @@ function handleSubmit() {
 <label>Customer Name</label>
 <input type="text" v-model="customerName" placeholder="e.g. Juan" />
 <p v-if="nameError" class="field-error">{{ nameError }}</p>
+
+<label>Order Date & Time</label>
+<input type="datetime-local" v-model="orderDate" />
 
 <label>Menu</label>
 
@@ -485,5 +497,29 @@ button[type='submit']:active {
   overflow-x: auto;
   padding-bottom: 0.25rem;
   margin-bottom: 0;
+}
+
+@media (max-width: 480px) {
+  .category-tabs {
+    flex-wrap: wrap;
+    overflow-x: visible;
+  }
+
+  .category-tabs-wrapper::after {
+    display: none;
+  }
+
+  .tab-btn {
+    flex: 1 1 calc(50% - 0.2rem);
+    text-align: center;
+  }
+
+  .item-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  input[type='datetime-local'] {
+    font-size: 0.9rem;
+  }
 }
 </style>

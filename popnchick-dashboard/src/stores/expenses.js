@@ -66,11 +66,25 @@ export const useExpensesStore = defineStore('expenses', () => {
       .reduce((sum, exp) => sum + exp.amount, 0)
   })
 
+  function getExpensesForDate(dateString) {
+    return expenses.value.filter((exp) => {
+      const expDate = new Date(exp.created_at)
+      const localDateString = `${expDate.getFullYear()}-${String(expDate.getMonth() + 1).padStart(2, '0')}-${String(expDate.getDate()).padStart(2, '0')}`
+      return localDateString === dateString
+    })
+  }
+
+  function getTotalExpensesForDate(dateString) {
+    return getExpensesForDate(dateString).reduce((sum, exp) => sum + exp.amount, 0)
+  }
+
   return {
     expenses,
     fetchExpenses,
     addExpense,
     dailyExpenses,
     monthlyExpenses,
+    getExpensesForDate,
+    getTotalExpensesForDate,
   }
 })

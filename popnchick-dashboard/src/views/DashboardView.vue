@@ -9,6 +9,7 @@ import AddExpenseForm from '../components/AddExpenseForm.vue'
 import OrderList from '../components/OrderList.vue'
 import EarningsSummary from '../components/EarningsSummary.vue'
 import StatisticsBoard from '../components/StatisticsBoard.vue'
+import HistoryView from '../components/HistoryView.vue'
 
 const router = useRouter()
 const ordersStore = useOrdersStore()
@@ -16,6 +17,7 @@ const expensesStore = useExpensesStore()
 const showAddOrder = ref(false)
 const showAddExpense = ref(false)
 const showStats = ref(false)
+const showHistory = ref(false)
 
 onMounted(() => {
   ordersStore.fetchOrders()
@@ -43,6 +45,7 @@ function handleExpenseAdded() {
       <div class="header-actions">
         <button class="primary-btn" @click="showAddOrder = true">+ Add Order</button>
         <button @click="showAddExpense = true">+ Add Expense</button>
+        <button @click="showHistory = true">🕐 History</button>
         <button @click="showStats = true">📊 Statistics</button>
         <button @click="handleLogout">Log Out</button>
       </div>
@@ -74,6 +77,15 @@ function handleExpenseAdded() {
           <button class="close-btn" @click="showStats = false">✕</button>
           <EarningsSummary />
           <StatisticsBoard />
+        </div>
+      </div>
+    </Transition>
+
+    <Transition name="fade">
+      <div v-if="showHistory" class="modal-overlay" @click.self="showHistory = false">
+        <div class="modal-content stats-modal">
+          <button class="close-btn" @click="showHistory = false">✕</button>
+          <HistoryView />
         </div>
       </div>
     </Transition>
