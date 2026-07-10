@@ -12,10 +12,10 @@ function formatTime(date) {
   <div class="order-list">
     <h2>Orders</h2>
 
-    <p v-if="ordersStore.orders.length === 0" class="empty-state">No orders yet today.</p>
+    <p v-if="ordersStore.todaysOrders.length === 0" class="empty-state">No orders yet today.</p>
 
     <TransitionGroup v-else name="list" tag="ul">
-      <li v-for="order in ordersStore.orders" :key="order.id" :class="{ completed: order.completed }">
+      <li v-for="order in ordersStore.todaysOrders" :key="order.id" :class="{ completed: order.completed }">
         <div class="order-top">
           <span class="customer">{{ order.customer_name }}</span>
           <span class="time">{{ formatTime( order.created_at) }}</span>

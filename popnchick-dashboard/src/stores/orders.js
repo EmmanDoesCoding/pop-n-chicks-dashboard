@@ -139,6 +139,19 @@ const bestSellingItems = computed(() => {
     return days
   })
 
+  const todaysOrders = computed(() => {
+    const today = new Date()
+
+    return orders.value.filter((order) => {
+      const orderDate = new Date(order.created_at)
+      return (
+        orderDate.getFullYear() === today.getFullYear() &&
+        orderDate.getMonth() === today.getMonth() &&
+        orderDate.getDate() === today.getDate()
+      )
+    })
+  })
+
   function getOrdersForDate(dateString) {
     return orders.value.filter((order) => {
       const orderDate = new Date(order.created_at)
@@ -164,5 +177,6 @@ const bestSellingItems = computed(() => {
     last7DaysEarnings,
     getOrdersForDate,
     getEarningsForDate,
+    todaysOrders,
   }
 })
